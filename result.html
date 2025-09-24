@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Payment Status</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    #decoded {
+      margin-top: 20px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      background-color: #f9f9f9;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>Base64 Response Decoder</h1>
+  <p>Decoded value from URL parameter:</p>
+  <div id="decoded">Waiting for response...</div>
+
+  <script>
+    // Get the "response" parameter from the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const encodedResponse = urlParams.get('response');
+
+    const decodedDiv = document.getElementById('decoded');
+
+    if (encodedResponse) {
+      try {
+        // Decode Base64
+        const decoded = atob(encodedResponse);
+        //decodedDiv.textContent = decoded;
+        console.log('Response',decoded)
+
+      } catch (err) {
+        decodedDiv.textContent = 'Invalid Base64 string';
+      }
+    } else {
+      decodedDiv.textContent = 'No response parameter provided';
+    }
+  </script>
+</body>
+</html>
