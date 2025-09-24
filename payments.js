@@ -107,7 +107,7 @@
         amount: "1000",
         dateOfPayment: new Date().toISOString(),
         expiryTime: new Date(Date.now() + 5 * 60000).toISOString(), // +5 mins
-       // redirectUrl: "http://localhost/ura-imp/result.html",
+        redirectUrl: "http://localhost/ura-imp/result.html",
         narration: "URA Web Payment",
         customerId: "12345",
         customerFirstName: "John",
