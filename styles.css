@@ -47,6 +47,7 @@
 
         .payment-row .ura-data .label{
             font-weight: bold!important;
+            text-transform: capitalize;
         }
 
         .payment-row .ura-data .value{
@@ -286,6 +287,8 @@
         #error{
             background-color: white;
             padding: 20px;
+            width: 40%;
+            border-radius: 10px;
         }
 
         #checkout-error{
@@ -305,4 +308,41 @@
             font-family:  'Averta-Regular';
             font-weight: lighter;
             color: rgb(189, 26, 26);
+        }
+
+        .hidden{
+            display: none!important;
+        }
+        .footer{
+            position: relative;
+            bottom: 0px;
+            width: 100%;
+            padding: 10px;
+            padding-bottom: 5px;
+            margin-top: 20px;
+            color: #666;
+            font-family:  'Averta-Regular';
+            font-weight: lighter;
+            font-size: 0.8rem;
+        }
+        .result_container{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: auto;
+            padding: 20px 10px;
+        }
+         #decoded {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            white-space: pre-wrap;
+            
+        }
+        .field {
+            margin: 5px 0;
+        }
+        .label {
+            font-weight: bold;
         }

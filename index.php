@@ -30,7 +30,7 @@ $param = isset($_GET['prn']) ? $_GET['prn'] : 'No prn provided';
     </iframe>
   </div>
 
-  <div class="main_container">
+  <div class="main_container" id="main_container">
     <div class="container">
       <div class="payment_detail">
         <div class="logo_banner">
@@ -41,12 +41,12 @@ $param = isset($_GET['prn']) ? $_GET['prn'] : 'No prn provided';
         <h1>Confirm Payment Details</h1>
         <p id="alert" style="color: red; display: none;"></p>
         <div class="payment-row">
-          <ul class="ura-data">
-            <li><h5 class="label">Name:</h5> <h5 id="ura-name" class="value">—</h5></li>
-            <li><h5 class="label">Payment to:</h5> <h5 id="ura-payto" class="value">—</h5></li>
-            <li><h5 class="label">Payment for:</h5> <h5 id="ura-purpose" class="value">—</h5></li>
+          <ul class="ura-data" id="ura-data">
+            <li><h5 class="label">Name:</h5> <h5 id="ura-name" class="value ft-bold">—</h5></li>
+            <li class="hidden"><h5 class="label">Payment to:</h5> <h5 id="ura-payto" class="value">—</h5></li>
+            <li class="hidden"><h5 class="label">Payment for:</h5> <h5 id="ura-purpose" class="value">—</h5></li>
             <li><h5 class="label">PRN:</h5> <h5 id="ura-prn" class="value ft-bold">—</h5></li>
-            <li><h5 class="label">TIN:</h5> <h5 id="ura-tin" class="value ft-bold">—</h5></li>
+            <li class="hidden"><h5 class="label">TIN:</h5> <h5 id="ura-tin" class="value ft-bold">—</h5></li>
             <li><h5 class="label">Amount:</h5> <h5 id="ura-amount" class="value ft-bold">—</h5></li>
           </ul>
 
@@ -59,28 +59,30 @@ $param = isset($_GET['prn']) ? $_GET['prn'] : 'No prn provided';
               <span class="label">Phone Number:</span>
               <input type="tel" placeholder="Enter phone number" id="phone" onkeyup="captureAdditionalInfo('phone')">
             </li>
-             <li id="checkout-error">
-               Please provide all required fields.
-             </li>
+               <p id="checkout-error">Please provide all required fields.</p>
           </ul>
         </div>
+
       </div>
 
       <div class="button_container">
-        <button onclick="openPopup()" class="btn">Continue To Payment</button>
+        <button onclick="openPopup()" class="btn">Proceed To Payment</button>
       </div>
-      
-
+       
+     <div class="footer"><strong>Interswitch</strong> is licensed and regulated by the Bank of Uganda</div>
     <div id="loading-dialog">
       <img id="loader-img" src="loader.gif" width="100px"/>
       <h3 id="loader-msg">Validating Payment Details...</h3>
       <p id="error" class="text-danger"></p>
       <button onclick="validatePRN()" id="retry-btn" class="btn btn-danger">Retry</button>
     </div>
+    
     </div>
+
   </div>
 
-  <script type="text/javascript" src="payments.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script type="text/javascript" src="payments.min.js"></script>
 
 </body>
 </html>

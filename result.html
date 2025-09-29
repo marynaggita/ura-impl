@@ -3,45 +3,70 @@
 <head>
   <meta charset="UTF-8">
   <title>Payment Status</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-    }
-    #decoded {
-      margin-top: 20px;
-      padding: 10px;
-      border: 1px solid #ccc;
-      background-color: #f9f9f9;
-      white-space: pre-wrap;
-    }
-  </style>
+   <link rel="stylesheet" href="styles.css">
+  
 </head>
 <body>
-  <h1>Base64 Response Decoder</h1>
-  <p>Decoded value from URL parameter:</p>
-  <div id="decoded">Waiting for response...</div>
+  <div class="main_container" id="main_container">
+    <div class="container">
+      <div class="payment_detail">
+        <!-- <h1>Response</h1>
+        <p>Decoded value from URL parameter:</p> -->
+        <h1 id="decoded">Waiting for response...</h1>
 
-  <script>
-    // Get the "response" parameter from the URL
+        <!-- <h1>Confirm Payment Details</h1> -->
+              <p id="alert" style="color: red; display: none;"></p>
+              <div class="payment-row">
+                <ul class="ura-data" id="ura-data">
+                  <li><h5 class="label">Response Message:</h5> <h5 id="responseMessage" class="value ft-bold">—</h5></li>
+                  <li><h5 class="label">Amount:</h5> <h5 id="amount" class="value ft-bold">—</h5></li>
+                  <li><h5 class="label">Order ID:</h5> <h5 id="orderId" class="value ft-bold">—</h5></li>
+                  <li><h5 class="label">Merchant ID:</h5> <h5 id="merchantId" class="value ft-bold">—</h5></li>
+
+              
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  
+    <script>
     const urlParams = new URLSearchParams(window.location.search);
-    const encodedResponse = urlParams.get('response');
-
-    const decodedDiv = document.getElementById('decoded');
+    let encodedResponse = urlParams.get('response');
 
     if (encodedResponse) {
       try {
-        // Decode Base64
-        const decoded = atob(encodedResponse);
-        //decodedDiv.textContent = decoded;
-        console.log('Response',decoded)
+        // Step 1: Decode URL encoding (%3D -> =)
+        encodedResponse = decodeURIComponent(encodedResponse);
 
+        // Step 2: Base64 decode
+        const decoded = atob(encodedResponse);
+
+        // Step 3: Parse JSON
+        const jsonResponse = JSON.parse(decoded);
+
+        // Show the whole JSON
+        // document.getElementById('decoded').textContent = JSON.stringify(jsonResponse, null, 2);
+        document.getElementById('decoded').textContent = 'Response';
+        // Show individual fields
+        document.getElementById('responseMessage').textContent = jsonResponse.responseMessage || 'N/A';
+        document.getElementById('amount').textContent = jsonResponse.amount || 'N/A';
+        document.getElementById('orderId').textContent = jsonResponse.orderId || 'N/A';
+        document.getElementById('merchantId').textContent = jsonResponse.merchantId || 'N/A';
+
+        console.log("Decoded JSON:", jsonResponse);
       } catch (err) {
-        decodedDiv.textContent = 'Invalid Base64 string';
+        document.getElementById('decoded').textContent = 'Invalid Base64 or JSON';
+        console.error(err);
       }
     } else {
-      decodedDiv.textContent = 'No response parameter provided';
+      document.getElementById('decoded').textContent = 'No response parameter provided';
     }
   </script>
+
+
+
+
 </body>
 </html>

@@ -16,7 +16,28 @@
        validatePRN();
       } else {
       console.warn("No parameter provided in URL");
+       document.getElementById('main_container').style.display="none"
+      Swal.fire({
+            title: "Invalid Data!",
+            text: "PRN required proceed!",
+            icon: "warning",
+            width:'20em',
+            confirmButtonText:'OK, Understood',
+            confirmButtonColor:'#6e0e0b',
+            iconColor:'#a80505'
+            });
     }
+
+    
+    function splitCamelCase(key) {
+    return key.replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase();
+    }
+
+    function formatAmount(amount) {
+        if (amount == null || amount === '') return '';
+        return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+            
 
     function validatePRN(){
       
@@ -38,7 +59,7 @@
       },15000)
 
       // Send to Spring Boot via GET
-      fetch(`http://localhost:8081/isw/payments/receive?value=${encodeURIComponent(param)}`)
+      fetch(`https://dev.interswitch.io/isw/payments/receive?value=${encodeURIComponent(param)}`)
         .then(response => response.json())
         .then(data => {
           console.log("Response from Spring Boot:", data)
@@ -54,13 +75,27 @@
               return;
           }
 
+          window.uraData.requestReference = payment.requestReference;
+          window.uraData.amount = payment.amount;
+          window.uraData.prn = payment.customerId;
+      
+          if(payment.additionalData){
+            const additionalDataJson= JSON.parse(payment.additionalData);
+            console.log('JSObject', additionalDataJson);
+
+            const additionalDataDetails = Object.entries(additionalDataJson)
+                .map(([key, value]) => ` <li><h5 class="label">${splitCamelCase(key)}</h5><h5 class="value ft-bold">${(value==='A')?'AVAILABLE':((value=='')?'N/A':value)}</h5></li>`)
+                .join("");
+            document.getElementById("ura-data").insertAdjacentHTML("beforeend",additionalDataDetails);
+          }
+
           loader.style.display="none";
           if (payment?.customerName) document.getElementById("ura-name").textContent = data.response.customerName;
           if (payment.customerId) document.getElementById("ura-payto").textContent = payment.customerId;
           if (payment.reason) document.getElementById("ura-purpose").textContent = payment.reason;
           if (payment.customerId) document.getElementById("ura-prn").textContent = payment.customerId;
           if (payment.tin) document.getElementById("ura-tin").textContent = payment.tin;
-          if (payment.amount) document.getElementById("ura-amount").textContent = payment.amount;
+          if (payment.amount) document.getElementById("ura-amount").textContent = formatAmount(payment.amount);
 
       // Optional input prefills
           if (data.customerEmail) document.getElementById("email").value = data.customerEmail;
@@ -90,10 +125,18 @@
 
       document.getElementById("checkout-error").innerHTML="";
 
-      if(!window?.uraData?.prn){
+      if(!window?.uraData?.prn || !window?.uraData?.customerEmail){
         document.getElementById("checkout-popup").style.display="none";
          //document.getElementById("checkout-popup").html ="No payment data provided."
-         document.getElementById("checkout-error").style.display = "block";
+         Swal.fire({
+            title: "Invalid Data!",
+            text: "Email and Phone number required!",
+            icon: "warning",
+            width:'20em',
+            confirmButtonText:'OK, Understood',
+            confirmButtonColor:'#6e0e0b',
+            iconColor:'#a80505'
+            });
          return;
       }
 
@@ -102,30 +145,30 @@
 
       // ✅ ORIGINAL checkout payload (unchanged)
       const checkoutData = {
-        transactionReference: "TXN_" + Date.now(),
-        orderId: "ORD_" + Date.now(),
-        amount: "1000",
+        transactionReference: window?.uraData?.requestReference,
+        orderId: window?.uraData?.prn,
+        amount: window?.uraData?.amount,
         dateOfPayment: new Date().toISOString(),
         expiryTime: new Date(Date.now() + 5 * 60000).toISOString(), // +5 mins
-        redirectUrl: "http://localhost/ura-imp/result.html",
+        redirectUrl: "https://dev.interswitch.io/ura-imp/result.html",
         narration: "URA Web Payment",
-        customerId: "12345",
-        customerFirstName: "John",
-        customerSecondName: "Doe",
+        customerId: window?.uraData?.prn,
+        customerFirstName: window?.uraData?.customerName,
+        customerSecondName: "",
         customerEmail: window?.uraData.customerEmail,
         customerMobile: window?.uraData.customerMobile,
-        merchantCode: "ISWKEN0001",
-        domain: "ISWKE",
-        currencyCode: "KES",
+        merchantCode: "TALKIO0001",
+        domain: "ISWUG",
+        currencyCode: "UGX",
         terminalType: "WEB",
         channel: "WEB",
         fee: "0",
         merchantName: "URA Payment",
         redirectMerchantName: "Return to Portal",
         primaryAccentColor: "#0099ff",
-        customerCity: "Nairobi",
-        customerCountry: "KE",
-        customerState: "NBI"
+        customerCity: "Kampala",
+        customerCountry: "UG",
+        customerState: "Kampala"
       };
 
       // Build hidden form
